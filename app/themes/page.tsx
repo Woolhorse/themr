@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { supabase } from "@/lib/supabase"
 import Image from "next/image"
+import { supabase } from "@/lib/supabase"
 
 type Category = { id: string; name: string }
 type Themr = {
   id: string
   title: string
   description: string
-  image_url: string | null
+  image_url?: string | null
   categories?: Category
 }
 
@@ -18,31 +18,37 @@ export default function ThemesPage() {
   const [themrs, setThemrs] = useState<Themr[]>([])
 
   useEffect(() => {
-    supabase
-      .from("themrs")
-      .select("*, categories(name)")
-      .then(({ data }) => {
-        if (data) setThemrs(data as Themr[])
-      })
+    async function fetchThemrs() {
+      const { data } = await supabase.from("themrs").select("*, categories(name)")
+      if (data) setThemrs(data as Themr[])
+    }
+    fetchThemrs()
   }, [])
 
   return (
-    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {themrs.map((t) => (
-        <Link key={t.id} href={`/themes/${t.id}`}>
-          <div className="bg-gray-900 p-4 rounded hover:shadow-lg cursor-pointer space-y-2">
-            <h3 className="font-bold text-white">{t.title}</h3>
-            {t.image_url && (
-              <Image
-                src={t.image_url}
-                alt={t.title}
-                width={300}
-                height={180}
-                className="rounded object-cover"
-              />
+    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      {themrs.map(({ id, title, image_url, categories }) => (
+        <Link key={id} href={`/themes/${id}`}>
+          <div className="bg-gray-800 p-4 rounded-xl hover:shadow-2xl hover:scale-105 transition-transform duration-300 cursor-pointer space-y-3">
+            
+            {/* Title */}
+            <h3 className="font-semibold text-lg text-white truncate">{title}</h3>
+
+            {/* Image */}
+            {image_url && (
+              <div className="w-full aspect-[16/9] relative rounded overflow-hidden">
+                <Image
+                  src={image_url}
+                  alt={title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
             )}
-            {t.categories && (
-              <p className="text-gray-400 text-sm">{t.categories.name}</p>
+
+            {/* Category */}
+            {categories && (
+              <p className="text-gray-400 text-sm">{categories.name}</p>
             )}
           </div>
         </Link>

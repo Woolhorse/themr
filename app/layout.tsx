@@ -1,6 +1,5 @@
-// app/layout.tsx
 import "./globals.css"
-import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
+import { ClerkProvider } from "@clerk/nextjs"
 import Topbar from "@/components/ui/topbar"
 import Footer from "@/components/ui/footer"
 
@@ -13,15 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-black text-white flex flex-col min-h-screen">
-        {/* Clerk auth provider */}
-        <ClerkProvider>
-          {/* Topbar on all pages */}
+        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_FRONTEND_API!}>
           <Topbar />
-
-          {/* Page content */}
           <main className="flex-1">{children}</main>
-
-          {/* Footer */}
           <Footer />
         </ClerkProvider>
       </body>
