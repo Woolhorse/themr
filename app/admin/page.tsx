@@ -1,125 +1,170 @@
 // app/admin/page.tsx
 "use client"
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Select, SelectItem } from "@/components/ui/select"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { ClipboardCopy, Edit2 } from "lucide-react"
 
-interface Themr {
+import { useUser } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { MoreHorizontal } from "lucide-react"
+
+type Themr = {
   id: string
   title: string
+  description: string
   category: string
+  image: string
+  creator: string
   visible: boolean
 }
 
-const initialThemrs: Themr[] = [
-  { id: "abc123", title: "Frosty Dark", category: "Dark", visible: true },
-  { id: "xyz789", title: "Sunny Light", category: "Light", visible: true },
-]
-
-function generateID() {
-  return Math.random().toString(36).substring(2, 9).toUpperCase()
-}
+// 👇 add your admin Clerk user IDs here
+const ADMIN_IDS = ["user_32eYd7pqQxnIuqXgXwUCEvBbkGz", "user_456def"]
 
 export default function AdminPanel() {
-  const [themrs, setThemrs] = useState<Themr[]>(initialThemrs)
-  const [newTitle, setNewTitle] = useState("")
-  const [newCategory, setNewCategory] = useState("Dark")
+  const { user, isLoaded } = useUser()
+  const router = useRouter()
+  const [authorized, setAuthorized] = useState(false)
 
-  const addThemr = () => {
-    if (!newTitle) return
-    const newThemr: Themr = {
-      id: generateID(),
-      title: newTitle,
-      category: newCategory,
-      visible: true,
+  // Simple access control check
+  useEffect(() => {
+    if (isLoaded) {
+      if (user && ADMIN_IDS.includes(user.id)) {
+        setAuthorized(true)
+      } else {
+        router.push("/") // kick non-admins to homepage
+      }
     }
-    setThemrs([newThemr, ...themrs])
-    setNewTitle("")
+  }, [user, isLoaded, router])
+
+  // Themr state
+  const [themrs, setThemrs] = useState<Themr[]>([])
+  const [newThemr, setNewThemr] = useState<Omit<Themr, "id" | "visible">>({
+    title: "",
+    description: "",
+    category: "",
+    image: "",
+    creator: "",
+  })
+
+  function handleAddThemr() {
+    const id = Math.random().toString(36).substring(2, 10)
+    const newEntry: Themr = { ...newThemr, id, visible: true }
+    setThemrs([...themrs, newEntry])
+    setNewThemr({ title: "", description: "", category: "", image: "", creator: "" })
   }
 
-  const toggleVisibility = (id: string) => {
-    setThemrs((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, visible: !t.visible } : t))
-    )
+  function toggleVisibility(id: string) {
+    setThemrs(themrs.map(t => (t.id === id ? { ...t, visible: !t.visible } : t)))
   }
 
-  const handleCopy = (id: string) => {
+  function copyId(id: string) {
     navigator.clipboard.writeText(id)
-    alert("Copied Themr ID!")
+    alert("Copied Themr ID: " + id)
   }
 
-  const handleEdit = (id: string) => {
-    const newTitle = prompt("Enter new title:")
-    if (!newTitle) return
-    setThemrs((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, title: newTitle } : t))
-    )
+  if (!authorized) {
+    return <p className="p-8 text-center">Checking access...</p>
   }
 
   return (
-    <main className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Admin Panel</h1>
+    <div className="p-8 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
 
-      {/* Add New Themr */}
-      <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Add New Themr</h2>
-        <div className="flex gap-2 flex-wrap">
-          <Input
-            placeholder="Title"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-          />
-          <Select value={newCategory} onValueChange={setNewCategory}>
-            <SelectItem value="Dark">Dark</SelectItem>
-            <SelectItem value="Light">Light</SelectItem>
-            <SelectItem value="Neon">Neon</SelectItem>
-          </Select>
-          <Button onClick={addThemr}>Create</Button>
-        </div>
-      </section>
+      {/* Form to Add a Themr */}
+      <div className="space-y-4 mb-8 bg-gray-900 p-6 rounded-lg border border-gray-700">
+        <Input
+          placeholder="Themr Title"
+          value={newThemr.title}
+          onChange={(e) => setNewThemr({ ...newThemr, title: e.target.value })}
+        />
+        <Textarea
+          placeholder="Description"
+          value={newThemr.description}
+          onChange={(e) => setNewThemr({ ...newThemr, description: e.target.value })}
+        />
+        <Select
+          value={newThemr.category}
+          onValueChange={(value) => setNewThemr({ ...newThemr, category: value })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Choose category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="theme">Theme</SelectItem>
+            <SelectItem value="plugin">Plugin</SelectItem>
+          </SelectContent>
+        </Select>
+        <Input
+          placeholder="Image URL"
+          value={newThemr.image}
+          onChange={(e) => setNewThemr({ ...newThemr, image: e.target.value })}
+        />
+        <Input
+          placeholder="Creator Name"
+          value={newThemr.creator}
+          onChange={(e) => setNewThemr({ ...newThemr, creator: e.target.value })}
+        />
+        <Button onClick={handleAddThemr}>Add Themr</Button>
+      </div>
 
-      {/* Existing Themrs */}
-      <section>
-        <h2 className="text-xl font-semibold mb-4">Existing Themrs</h2>
-        <div className="flex flex-col gap-3">
-          {themrs.map((themr) => (
-            <div
-              key={themr.id}
-              className="flex items-center justify-between bg-gray-900 p-3 rounded border border-gray-700"
-            >
+      {/* List of Themrs */}
+      <div className="space-y-4">
+        {themrs.map((themr) => (
+          <div
+            key={themr.id}
+            className="bg-gray-900 border border-gray-700 rounded-lg p-4 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-4">
+              {themr.image && (
+                <img
+                  src={themr.image}
+                  alt={themr.title}
+                  className="w-20 h-14 object-cover rounded"
+                />
+              )}
               <div>
-                <p className="font-bold">{themr.title}</p>
-                <p className="text-gray-400">
-                  {themr.category} | {themr.visible ? "Visible" : "Hidden"}
+                <h2 className="font-bold text-lg">{themr.title}</h2>
+                <p className="text-sm text-gray-400">{themr.description}</p>
+                <p className="text-xs text-gray-500">
+                  ID: <span className="select-all">{themr.id}</span>
                 </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                {/* Dropdown for actions */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="px-2 py-1 bg-gray-800 rounded">
-                    ...
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-gray-900 border border-gray-700">
-                    <DropdownMenuItem onClick={() => handleCopy(themr.id)}>
-                      <ClipboardCopy className="w-4 h-4 mr-1" /> Copy ID
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => toggleVisibility(themr.id)}>
-                      {themr.visible ? "Hide" : "Show"}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleEdit(themr.id)}>
-                      <Edit2 className="w-4 h-4 mr-1" /> Edit Title
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <p className="text-xs text-gray-500">Creator: {themr.creator}</p>
+                <p className="text-xs">{themr.visible ? "Visible ✅" : "Hidden ❌"}</p>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-    </main>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal className="w-5 h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => copyId(themr.id)}>
+                  Copy Themr ID
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => toggleVisibility(themr.id)}>
+                  {themr.visible ? "Hide" : "Show"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }

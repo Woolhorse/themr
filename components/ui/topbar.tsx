@@ -1,8 +1,13 @@
 // components/topbar.tsx
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
-import { UserButton } from "@clerk/nextjs"
-import { Button } from "@/components/ui/button"
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,13 +17,13 @@ import {
 
 export default function Topbar() {
   return (
-    <header className="flex items-center justify-between p-4 border-b border-white bg-neutral-05">
+    <header className="flex items-center justify-between p-4 border-b border-white bg-neutral-950">
       {/* Logo */}
       <Link href="/">
         <h1 className="text-2xl font-bold text-white cursor-pointer">Themr</h1>
       </Link>
 
-      {/* Navigation + Search + User */}
+      {/* Navigation + Search + Auth */}
       <div className="flex items-center gap-4">
         {/* Navigation Menu */}
         <DropdownMenu>
@@ -41,7 +46,8 @@ export default function Topbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-                <DropdownMenu>
+        {/* Categories Menu */}
+        <DropdownMenu>
           <DropdownMenuTrigger className="px-3 py-2 bg-neutral-300 text-black rounded-md">
             Categories
           </DropdownMenuTrigger>
@@ -61,8 +67,6 @@ export default function Topbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-
-
         {/* Search */}
         <Input
           type="text"
@@ -70,13 +74,23 @@ export default function Topbar() {
           className="bg-gray-900 text-white px-3 py-1 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-white"
         />
 
+        {/* Auth Buttons */}
+        <SignedOut>
+          <SignInButton mode="modal">
+            <button className="px-3 py-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 whitespace-nowrap">
+              Sign In
+            </button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <button className="px-3 py-2 rounded-md bg-[#6c47ff] text-white hover:bg-[#5939d9] whitespace-nowrap">
+              Sign Up
+            </button>
+          </SignUpButton>
+        </SignedOut>
 
-      {/*<Link href={`/themes/`}>
-      <Button className="w-full bg-blue-600 text-white cursor-pointer">Login</Button>
-      </Link>*/}
-
-        {/* User */}
-        <UserButton />
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </div>
     </header>
   )

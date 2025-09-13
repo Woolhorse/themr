@@ -38,7 +38,7 @@ export default function HomePage() {
   </CardContent>
   <CardFooter className="p-6">
     <Link href={`/themes/${themr.id}`}>
-      <Button className="w-full bg-blue-600 text-white cursor-pointer">View</Button>
+      <Button className="w-full bg-blue-600 text-white cursor-pointer bg-[#6c47ff]">View</Button>
     </Link>
    </CardFooter>
     </Card>
