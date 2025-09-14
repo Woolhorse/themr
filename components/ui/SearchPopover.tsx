@@ -65,7 +65,7 @@ if (error) {
           className="mb-2 bg-neutral-800 border-neutral-700 text-white"
         />
 
-        {loading && <p className="text-sm text-neutral-400">Loading...</p>}
+        {loading && <p className="text-sm text-neutral-400">Waiting...</p>}
 
         {!loading && results.length === 0 && query && (
           <p className="text-sm text-neutral-400">No results found</p>
