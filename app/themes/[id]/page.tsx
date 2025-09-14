@@ -80,13 +80,15 @@ export default function ThemrDetailPage({ params }: { params: { id: string } }) 
       </div>
 
 {showAlert && (
-  <Alert variant="default" className="bg-neutral-900 text-white border-neutral-700">
-  <ClipboardCheck />
-  <AlertTitle>Copied!</AlertTitle>
-  <AlertDescription>
-    Copied {themr.title} ID to clipboard!
-  </AlertDescription>
-</Alert>
+  <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
+    <Alert variant="default" className="bg-neutral-900 text-white border-neutral-700 shadow-lg">
+      <ClipboardCheck />
+      <AlertTitle>Copied!</AlertTitle>
+      <AlertDescription>
+        Copied {themr.title} ID to clipboard!
+      </AlertDescription>
+    </Alert>
+  </div>
 )}
 
     </div>

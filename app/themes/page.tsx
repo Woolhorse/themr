@@ -65,7 +65,7 @@ export default function ThemesPage() {
             </div>
             <h3 className="text-med text-neutral-500 truncate px-4 py-0">{description}</h3>
 
-            <h3 className="text-sm text-neutral-600 truncate px-4 pt-1 pb-0">By {created_by}</h3>
+            <h3 className="text-sm text-neutral-600 truncate px-4 pt-1 pb-3">By {created_by}</h3>
 
 
 
