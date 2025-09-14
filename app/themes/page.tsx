@@ -29,7 +29,7 @@ export default function ThemesPage() {
     <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
       {themrs.map(({ id, title, image_url, categories }) => (
         <Link key={id} href={`/themes/${id}`}>
-          <div className="bg-gray-800 p-4 rounded-xl hover:shadow-2xl hover:scale-105 transition-transform duration-300 cursor-pointer space-y-3">
+          <div className="bg-neutral-800 p-4 rounded-xl hover:shadow-2xl hover:scale-105 transition-transform duration-300 cursor-pointer space-y-3">
             
             {/* Title */}
             <h3 className="font-semibold text-lg text-white truncate">{title}</h3>

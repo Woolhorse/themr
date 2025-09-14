@@ -10,11 +10,11 @@ export default function Topbar() {
   console.log("Clerk user:", user, "signed in?", isSignedIn)
 
   return (
-    <header className="flex items-center justify-between p-4 bg-gray-900 border-b border-gray-700 sticky top-0 z-50">
+    <header className="flex items-center justify-between p-4 bg-neutral-900 border-b border-gray-700 sticky top-0 z-50">
       
       {/* Logo */}
       <Link href="/">
-        <h1 className="text-2xl font-bold text-pink-400 cursor-pointer hover:text-pink-500 transition-colors">Themr</h1>
+        <h1 className="text-2xl font-bold text-white cursor-pointer hover:text-neutral-300 transition-colors">Themr</h1>
       </Link>
 
       {/* Nav + Search + User */}
@@ -22,10 +22,10 @@ export default function Topbar() {
 
         {/* Main Menu Dropdown */}
         <DropdownMenu>
-          <DropdownMenuTrigger className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-pink-500 hover:text-white transition">
+          <DropdownMenuTrigger className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 hover:text-white transition">
             Menu
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-gray-800 border border-gray-700 text-white">
+          <DropdownMenuContent className="bg-neutral-800 border border-gray-700 text-white">
             <DropdownMenuItem><Link href="/">Home</Link></DropdownMenuItem>
             <DropdownMenuItem><Link href="/themes">Themes</Link></DropdownMenuItem>
             <DropdownMenuItem><Link href="/about">About</Link></DropdownMenuItem>
@@ -35,10 +35,10 @@ export default function Topbar() {
 
         {/* Categories Dropdown */}
         <DropdownMenu>
-          <DropdownMenuTrigger className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-pink-500 hover:text-white transition">
+          <DropdownMenuTrigger className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 hover:text-white transition">
             Categories
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-gray-800 border border-gray-700 text-white">
+          <DropdownMenuContent className="bg-neutral-800 border border-neutral-900 text-white">
             <DropdownMenuItem><Link href="/">Dark</Link></DropdownMenuItem>
             <DropdownMenuItem><Link href="/themes">Light</Link></DropdownMenuItem>
             <DropdownMenuItem><Link href="/about">Fun</Link></DropdownMenuItem>
@@ -50,10 +50,21 @@ export default function Topbar() {
         <Input
           type="text"
           placeholder="Search Themrs..."
-          className="bg-gray-800 text-white px-3 py-1 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
+          className="bg-neutral-800 text-white px-3 py-1 rounded-md border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
         />
 
         {/* User auth */}
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+        
         <div className="flex items-center gap-2">
           <SignedOut>
             <SignInButton>

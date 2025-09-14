@@ -29,24 +29,24 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="relative bg-gray-900 min-h-screen">
+    <div className="relative bg-neutral-950 min-h-screen">
 
       {/* subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 opacity-20 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-800 opacity-20 pointer-events-none"></div>
 
       <div className="relative z-10 p-6 max-w-7xl mx-auto space-y-12">
 
         {/* Hero Section */}
         <div className="text-center space-y-4">
           <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight">
-            Welcome to <span className="text-pink-400">Themr</span>
+            Welcome to Themr
           </h1>
           <p className="text-gray-300 text-lg md:text-xl">
             Discover, share, and explore amazing themes for Essentials+.
           </p>
           <Link
             href="/themes"
-            className="inline-block mt-4 px-6 py-3 bg-pink-500 text-white font-semibold rounded-xl shadow-lg hover:bg-pink-600 hover:scale-105 transition-all duration-300"
+            className="inline-block mt-4 px-6 py-3 bg-purple-500 text-white font-semibold rounded-xl shadow-lg hover:bg-purple-600 hover:scale-105 transition-all duration-300"
           >
             Browse Themes
           </Link>
@@ -58,7 +58,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {recentThemrs.map(({ id, title, image_url, categories }) => (
               <Link key={id} href={`/themes/${id}`}>
-                <div className="bg-gray-800 p-4 rounded-xl hover:shadow-[0_0_20px_rgba(255,192,203,0.3)] hover:scale-105 transition-transform duration-300 cursor-pointer space-y-3">
+                <div className="bg-neutral-800 p-4 rounded-xl hover:shadow-[0_0_20px_rgba(255,192,203,0.3)] hover:scale-105 transition-transform duration-300 cursor-pointer space-y-3">
                   
                   {image_url && (
                     <div className="w-full aspect-[16/9] relative rounded overflow-hidden">
@@ -84,7 +84,7 @@ export default function HomePage() {
         </section>
 
         {/* Why Themr Section */}
-        <section className="mt-16 bg-gray-800 p-8 rounded-2xl space-y-4 text-center">
+        <section className="mt-16 bg-neutral-900 p-8 rounded-2xl space-y-4 text-center">
           <h2 className="text-3xl font-bold text-white">Why Themr?</h2>
           <p className="text-gray-300 max-w-2xl mx-auto">
             Themr makes it easy to share and discover themes for Essentials+. 

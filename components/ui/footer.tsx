@@ -7,7 +7,6 @@ export default function Footer() {
       <p>©2025 Themr</p>
       <div className="flex gap-4">
         <Link href="https://discord.gg/k59qbrbmCK" target="_blank">Discord</Link>
-        <Link href="/docs">Documentation</Link>
         <Link href="/privacy">Privacy Policy</Link>
         <Link href="/terms">Terms of Service</Link>
       </div>
