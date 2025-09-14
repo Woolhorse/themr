@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import Image from "next/image"
+import Link from "next/link"
 
 type Category = {
   id: string
@@ -61,6 +62,20 @@ export default function AdminPanel() {
     fetchThemrs()
   }
 
+  // DELETE FUNCTIONS
+  const deleteThemr = async (id: string) => {
+    await supabase.from("themrs").delete().eq("id", id)
+    fetchThemrs()
+  }
+
+  const deleteCategory = async (id: string) => {
+    // Optional: delete all themrs in this category first
+    await supabase.from("themrs").delete().eq("category_id", id)
+    await supabase.from("categories").delete().eq("id", id)
+    fetchCategories()
+    fetchThemrs()
+  }
+
   return (
     <div className="p-6 text-white space-y-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold">Admin Panel</h1>
@@ -81,6 +96,7 @@ export default function AdminPanel() {
           value={newThemrDesc}
           onChange={(e) => setNewThemrDesc(e.target.value)}
         />
+
         <input
           type="text"
           placeholder="Image URL"
@@ -88,6 +104,7 @@ export default function AdminPanel() {
           value={newThemrImage}
           onChange={(e) => setNewThemrImage(e.target.value)}
         />
+        <p>Wait! Please upload images with <Link href="https://postimages.org/" target="_blank"> postimages.org</Link> or they may not work!</p>
         <select
           className="p-2 rounded bg-gray-900 border border-gray-700 w-full"
           value={newCategoryId}
@@ -108,12 +125,30 @@ export default function AdminPanel() {
         </button>
       </section>
 
+      {/* Existing Categories */}
+      <section>
+        <h2 className="text-2xl font-bold">Categories</h2>
+        <div className="flex flex-wrap gap-4 mt-2">
+          {categories.map((c) => (
+            <div key={c.id} className="bg-gray-800 px-4 py-2 rounded flex items-center gap-2">
+              <span>{c.name}</span>
+              <button
+                className="text-red-500 hover:text-red-400"
+                onClick={() => deleteCategory(c.id)}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Existing Themrs */}
       <section>
         <h2 className="text-2xl font-bold">Existing Themrs</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {themrs.map((t) => (
-            <div key={t.id} className="bg-gray-900 p-4 rounded space-y-2">
+            <div key={t.id} className="bg-gray-900 p-4 rounded space-y-2 relative">
               <h3 className="font-bold">{t.title}</h3>
               {t.image_url && (
                 <Image
@@ -129,6 +164,12 @@ export default function AdminPanel() {
                 Category: {t.categories?.name || "None"}
               </p>
               <p className="text-gray-500 text-xs">Created by: {t.created_by}</p>
+              <button
+                className="absolute top-2 right-2 text-red-500 hover:text-red-400"
+                onClick={() => deleteThemr(t.id)}
+              >
+                Delete
+              </button>
             </div>
           ))}
         </div>
