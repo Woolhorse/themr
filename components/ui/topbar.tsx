@@ -58,10 +58,10 @@ export default function Topbar() {
         <div className="flex items-center gap-2">
           <SignedOut>
             <SignInButton>
-              <Button variant="outline" className="border-pink-400 text-pink-400 hover:bg-pink-500 hover:text-white transition">Sign In</Button>
+              <Button variant="secondary" className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 transition">Sign In</Button>
             </SignInButton>
             <SignUpButton>
-              <Button variant="outline" className="border-pink-400 text-pink-400 hover:bg-pink-500 hover:text-white transition">Sign Up</Button>
+              <Button variant="secondary" className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 transition">Sign Up</Button>
             </SignUpButton>
           </SignedOut>
           <SignedIn>

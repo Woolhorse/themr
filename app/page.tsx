@@ -13,6 +13,7 @@ type Themr = {
   categories?: Category
 }
 
+
 export default function HomePage() {
   const [recentThemrs, setRecentThemrs] = useState<Themr[]>([])
 
@@ -29,10 +30,10 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="relative bg-neutral-950 min-h-screen">
+    <div className="relative min-h-screen">
 
-      {/* subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-800 opacity-20 pointer-events-none"></div>
+      
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_0%,#0a0a0a_80%)]" />
 
       <div className="relative z-10 p-6 max-w-7xl mx-auto space-y-12">
 
