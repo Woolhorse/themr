@@ -107,7 +107,7 @@ export default function Topbar({ themes, onSearch }: TopbarProps) {
             <SignedIn>
               <UserButton />
               {/* Secret button for a specific user */}
-              {user?.id === "YOUR_SPECIAL_USER_ID" && (
+              {user?.id === "user_32hq3G3Jv2v2USX4NLH03dyEArw" && (
                 <Button className="px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-500 transition">
                   Secret Button
                 </Button>
