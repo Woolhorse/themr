@@ -28,6 +28,7 @@ export default function AdminPanel() {
   const [newThemrDesc, setNewThemrDesc] = useState("")
   const [newThemrImage, setNewThemrImage] = useState("")
   const [newCategoryId, setNewCategoryId] = useState("")
+  const [newThemrAuthor, setNewThemrAuthor] = useState("")
 
   useEffect(() => {
     fetchCategories()
@@ -53,7 +54,7 @@ export default function AdminPanel() {
         description: newThemrDesc,
         image_url: newThemrImage,
         category_id: newCategoryId,
-        created_by: "Admin",
+        created_by: newThemrAuthor,
       },
     ])
     setNewThemrTitle("")
@@ -96,6 +97,15 @@ export default function AdminPanel() {
           value={newThemrDesc}
           onChange={(e) => setNewThemrDesc(e.target.value)}
         />
+
+        <input
+          type="text"
+          placeholder="Author"
+          className="p-2 rounded bg-gray-900 border border-gray-700 w-full"
+          value={newThemrAuthor}
+          onChange={(e) => setNewThemrAuthor(e.target.value)}
+        />
+
 
         <input
           type="text"

@@ -4,7 +4,14 @@ import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { UserButton, SignedIn, SignedOut, SignInButton, SignUpButton, useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
 
 export default function Topbar() {
   const { isSignedIn, user } = useUser()
@@ -21,31 +28,28 @@ export default function Topbar() {
       {/* Nav + Search + User */}
       <div className="flex items-center gap-4">
 
-        {/* Main Menu Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 transition">
-            Menu
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-neutral-800 border border-gray-700 text-white">
-            <DropdownMenuItem><Link href="/">Home</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link href="/themes">Themes</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link href="/about">About</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link href="/contact">Contact</Link></DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Categories Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 transition">
-            Categories
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-neutral-800 border border-neutral-900 text-white">
-            <DropdownMenuItem><Link href="/">Dark</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link href="/themes">Light</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link href="/about">Fun</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link href="/contact">Other</Link></DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Categories Menu */}
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="bg-neutral-800 hover:bg-neutral-600 hover:text-black">Menu</NavigationMenuTrigger>
+              <NavigationMenuContent className="bg-neutral-800 text-white rounded-md p-2 shadow-lg">
+                <NavigationMenuLink asChild>
+                  <Link href="/">Home</Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <Link href="/themes">Themes</Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <Link href="/">-</Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <Link href="/">-</Link>
+                </NavigationMenuLink>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
 
         {/* Search */}
         <Input
@@ -54,15 +58,34 @@ export default function Topbar() {
           className="bg-neutral-800 text-white px-3 py-1 rounded-md border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
         />
 
+    <UserButton />
+
+    {/* Special button for a specific user */}
+    {user && user.id === "YOUR_SPECIAL_USER_ID" && (
+      <Button
+        variant="secondary"
+        className="px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-500 transition"
+      >
+        Secret Button
+      </Button>
+    )}      
+
+
         {/* User auth */}
         <div className="flex items-center gap-2">
           <SignedOut>
-            <SignInButton>
-              <Button variant="secondary" className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 transition">Sign In</Button>
-            </SignInButton>
-            <SignUpButton>
-              <Button variant="secondary" className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 transition">Sign Up</Button>
-            </SignUpButton>
+            <div className="flex gap-2">
+              <SignInButton>
+                <Button variant="secondary" className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 transition">
+                  Sign In
+                </Button>
+              </SignInButton>
+              <SignUpButton>
+                <Button variant="secondary" className="px-3 py-2 bg-neutral-800 text-white rounded-md hover:bg-purple-500 transition">
+                  Sign Up
+                </Button>
+              </SignUpButton>
+            </div>
           </SignedOut>
           <SignedIn>
             <UserButton />
