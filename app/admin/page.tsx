@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import Image from "next/image"
 import Link from "next/link"
+import { useUser, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs"
 
 type Category = {
   id: string
@@ -21,7 +22,13 @@ type Themr = {
   created_at?: string
 }
 
+const ALLOWED_USER_IDS = [
+  "user_123abc", // replace with real Clerk user IDs
+  "user_456def",
+]
+
 export default function AdminPanel() {
+  const { user } = useUser()
   const [categories, setCategories] = useState<Category[]>([])
   const [themrs, setThemrs] = useState<Themr[]>([])
   const [newThemrTitle, setNewThemrTitle] = useState("")
@@ -30,20 +37,22 @@ export default function AdminPanel() {
   const [newCategoryId, setNewCategoryId] = useState("")
   const [newThemrAuthor, setNewThemrAuthor] = useState("")
 
+  const isAllowed = user && ALLOWED_USER_IDS.includes(user.id)
+
   useEffect(() => {
-    fetchCategories()
-    fetchThemrs()
-  }, [])
+    if (isAllowed) {
+      fetchCategories()
+      fetchThemrs()
+    }
+  }, [isAllowed])
 
   const fetchCategories = async () => {
-    const { data, error } = await supabase.from("categories").select("*")
+    const { data } = await supabase.from("categories").select("*")
     if (data) setCategories(data as Category[])
   }
 
   const fetchThemrs = async () => {
-    const { data } = await supabase
-      .from("themrs")
-      .select("*, categories(name)")
+    const { data } = await supabase.from("themrs").select("*, categories(name)")
     if (data) setThemrs(data as Themr[])
   }
 
@@ -63,18 +72,38 @@ export default function AdminPanel() {
     fetchThemrs()
   }
 
-  // DELETE FUNCTIONS
   const deleteThemr = async (id: string) => {
     await supabase.from("themrs").delete().eq("id", id)
     fetchThemrs()
   }
 
   const deleteCategory = async (id: string) => {
-    // Optional: delete all themrs in this category first
     await supabase.from("themrs").delete().eq("category_id", id)
     await supabase.from("categories").delete().eq("id", id)
     fetchCategories()
     fetchThemrs()
+  }
+
+  if (!user) {
+    return (
+      <div className="p-6 text-white">
+        <p>You gotta log in to enter ✨</p>
+        <SignInButton>
+          <button className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-500 mt-2">
+            Sign in
+          </button>
+        </SignInButton>
+      </div>
+    )
+  }
+
+  if (!isAllowed) {
+    return (
+      <div className="p-6 text-white">
+        <h1 className="text-2xl font-bold">🚫 Access Denied 🚫</h1>
+        <p>sorry bestie, this page is for admins only 😔</p>
+      </div>
+    )
   }
 
   return (
@@ -97,7 +126,6 @@ export default function AdminPanel() {
           value={newThemrDesc}
           onChange={(e) => setNewThemrDesc(e.target.value)}
         />
-
         <input
           type="text"
           placeholder="Author"
@@ -105,8 +133,6 @@ export default function AdminPanel() {
           value={newThemrAuthor}
           onChange={(e) => setNewThemrAuthor(e.target.value)}
         />
-
-
         <input
           type="text"
           placeholder="Image URL"
@@ -114,7 +140,13 @@ export default function AdminPanel() {
           value={newThemrImage}
           onChange={(e) => setNewThemrImage(e.target.value)}
         />
-        <p>Wait! Please upload images with <Link href="https://postimages.org/" target="_blank"> postimages.org</Link> or they may not work!</p>
+        <p>
+          Wait! Please upload images with{" "}
+          <Link href="https://postimages.org/" target="_blank">
+            postimages.org
+          </Link>{" "}
+          or they may not work!
+        </p>
         <select
           className="p-2 rounded bg-gray-900 border border-gray-700 w-full"
           value={newCategoryId}
@@ -140,7 +172,10 @@ export default function AdminPanel() {
         <h2 className="text-2xl font-bold">Categories</h2>
         <div className="flex flex-wrap gap-4 mt-2">
           {categories.map((c) => (
-            <div key={c.id} className="bg-gray-800 px-4 py-2 rounded flex items-center gap-2">
+            <div
+              key={c.id}
+              className="bg-gray-800 px-4 py-2 rounded flex items-center gap-2"
+            >
               <span>{c.name}</span>
               <button
                 className="text-red-500 hover:text-red-400"
@@ -158,7 +193,10 @@ export default function AdminPanel() {
         <h2 className="text-2xl font-bold">Existing Themrs</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {themrs.map((t) => (
-            <div key={t.id} className="bg-gray-900 p-4 rounded space-y-2 relative">
+            <div
+              key={t.id}
+              className="bg-gray-900 p-4 rounded space-y-2 relative"
+            >
               <h3 className="font-bold">{t.title}</h3>
               {t.image_url && (
                 <Image
