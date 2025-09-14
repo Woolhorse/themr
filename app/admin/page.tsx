@@ -87,7 +87,7 @@ export default function AdminPanel() {
   if (!user) {
     return (
       <div className="p-6 text-white">
-        <p>You gotta log in to enter ✨</p>
+        <p>Please log in.</p>
         <SignInButton>
           <button className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-500 mt-2">
             Sign in
@@ -100,8 +100,8 @@ export default function AdminPanel() {
   if (!isAllowed) {
     return (
       <div className="p-6 text-white">
-        <h1 className="text-2xl font-bold">🚫 Access Denied 🚫</h1>
-        <p>sorry bestie, this page is for admins only 😔</p>
+        <h1 className="text-2xl font-bold">Rejected</h1>
+        <p>Bitch why u here ts for admins only xx if u an admin log in x</p>
       </div>
     )
   }
