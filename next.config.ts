@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
 
 images: {
-  domains: ['xyz.supabase.co', 'letsenhance.io', 'postimages.org'],
+  domains: ['xyz.supabase.co', 'letsenhance.io', 'postimages.org', 'postimg.cc'],
 }
 
 
