@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 
           {/* Your existing Topbar component */}
-          <Topbar />
+          <Topbar themes={[]} />
 
           <main className="flex-1">{children}</main>
 
