@@ -47,7 +47,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/themes"
-            className="inline-block mt-4 px-6 py-3 bg-purple-500 text-white font-semibold rounded-xl shadow-lg hover:bg-purple-600 hover:scale-105 transition-all duration-300"
+            className="inline-block mt-4 px-6 py-3 bg-white text-neutral-950 font-semibold rounded-xl shadow-lg hover:bg-purple-600 hover:scale-105 transition-all duration-300"
           >
             Browse Themes
           </Link>

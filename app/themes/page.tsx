@@ -69,12 +69,6 @@ export default function ThemesPage() {
 
 
 
-            {/* Category */}
-            {categories && (
-              <p className="text-gray-400 text-sm px-4 py-1 pb-4">{categories.name}</p>
-            )}
-
-
 
 
           </div>
