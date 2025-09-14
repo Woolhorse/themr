@@ -23,7 +23,7 @@ type Themr = {
 }
 
 const ALLOWED_USER_IDS = [
-  "user_123abc", // replace with real Clerk user IDs
+  "user_32hq3G3Jv2v2USX4NLH03dyEArw", // replace with real Clerk user IDs
   "user_456def",
 ]
 
