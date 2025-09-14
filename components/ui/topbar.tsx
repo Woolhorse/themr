@@ -22,6 +22,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
+import { Menu } from "lucide-react"
 
 type ThemeCard = {
   id: string
@@ -30,13 +31,14 @@ type ThemeCard = {
 }
 
 interface TopbarProps {
-  themes: ThemeCard[] // Pass your themes from parent or fetch here
+  themes: ThemeCard[]
   onSearch?: (results: ThemeCard[]) => void
 }
 
 export default function Topbar({ themes, onSearch }: TopbarProps) {
   const { isLoaded, isSignedIn, user } = useUser()
   const [query, setQuery] = useState("")
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Filter themes based on search query
   useEffect(() => {
@@ -58,10 +60,8 @@ export default function Topbar({ themes, onSearch }: TopbarProps) {
         </h1>
       </Link>
 
-      {/* Nav + Search + User */}
-      <div className="flex items-center gap-4">
-
-        {/* Categories Menu */}
+      {/* Desktop Nav */}
+      <div className="hidden md:flex items-center gap-4">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -81,7 +81,7 @@ export default function Topbar({ themes, onSearch }: TopbarProps) {
         </NavigationMenu>
 
         {/* Search */}
-          <SearchPopover />
+        <SearchPopover />
 
         {/* Auth / User Section */}
         {isLoaded && (
@@ -101,7 +101,6 @@ export default function Topbar({ themes, onSearch }: TopbarProps) {
 
             <SignedIn>
               <UserButton />
-              {/* Secret button for a specific user */}
               {user?.id === "user_32hq3G3Jv2v2USX4NLH03dyEArw" && (
                 <Button className="px-4 py-2 bg-neutral-900 text-white rounded-md hover:bg-red-800 transition">
                   <Link href="/admin">Admin</Link>
@@ -111,6 +110,53 @@ export default function Topbar({ themes, onSearch }: TopbarProps) {
           </div>
         )}
       </div>
+
+      {/* Mobile Menu Button */}
+      <div className="md:hidden flex items-center gap-2">
+        <SearchPopover />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-white"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          <Menu className="h-6 w-6" />
+        </Button>
+      </div>
+
+      {/* Mobile Dropdown */}
+      {mobileMenuOpen && (
+        <div className="absolute top-16 left-0 w-full bg-neutral-900 border-t border-neutral-700 flex flex-col p-4 gap-3 md:hidden z-40">
+          <Link href="/" className="hover:text-purple-400">Home</Link>
+          <Link href="/themes" className="hover:text-purple-400">Themes</Link>
+
+          {isLoaded && (
+            <>
+              <SignedOut>
+                <SignInButton>
+                  <Button className="w-full bg-neutral-800 text-white hover:bg-purple-500">
+                    Sign In
+                  </Button>
+                </SignInButton>
+                <SignUpButton>
+                  <Button className="w-full bg-neutral-800 text-white hover:bg-purple-500">
+                    Sign Up
+                  </Button>
+                </SignUpButton>
+              </SignedOut>
+
+              <SignedIn>
+                <UserButton />
+                {user?.id === "user_32hq3G3Jv2v2USX4NLH03dyEArw" && (
+                  <Button className="w-full bg-neutral-900 text-white hover:bg-red-800">
+                    <Link href="/admin">Admin</Link>
+                  </Button>
+                )}
+              </SignedIn>
+            </>
+          )}
+        </div>
+      )}
     </header>
   )
 }
