@@ -18,10 +18,12 @@ type Themr = {
   created_by: string
 }
 
+type Toast = { id: string; title: string }
+
 export default function ThemrDetailPage({ params }: { params: { id: string } }) {
   const { id } = params
   const [themr, setThemr] = useState<Themr | null>(null)
-  const [showAlert, setShowAlert] = useState(false)
+  const [toasts, setToasts] = useState<Toast[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -39,8 +41,11 @@ export default function ThemrDetailPage({ params }: { params: { id: string } }) 
   const copyID = () => {
     if (!themr) return
     navigator.clipboard.writeText(themr.id).then(() => {
-      setShowAlert(true)
-      setTimeout(() => setShowAlert(false), 3000) // hide after 3s
+      const toastId = crypto.randomUUID()
+      setToasts((prev) => [...prev, { id: toastId, title: themr.title }])
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== toastId))
+      }, 3000)
     })
   }
 
@@ -79,18 +84,42 @@ export default function ThemrDetailPage({ params }: { params: { id: string } }) 
         </Button>
       </div>
 
-{showAlert && (
-  <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
-    <Alert variant="default" className="bg-neutral-900 text-white border-neutral-700 shadow-lg">
-      <ClipboardCheck />
-      <AlertTitle>Copied!</AlertTitle>
-      <AlertDescription>
-        Copied {themr.title} ID to clipboard!
-      </AlertDescription>
-    </Alert>
-  </div>
-)}
+      {/* Toast Container */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
+        {toasts.map((toast) => (
+          <ToastAlert key={toast.id} title={toast.title} />
+        ))}
+      </div>
+    </div>
+  )
+}
 
+// Single Toast Alert
+function ToastAlert({ title }: { title: string }) {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    setVisible(true)
+    const timer = setTimeout(() => setVisible(false), 2800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <div
+      className={`transform transition-all duration-300 ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      }`}
+    >
+      <Alert
+        variant="default"
+        className="bg-neutral-900 text-white border-neutral-700 shadow-lg flex items-center gap-2"
+      >
+        <ClipboardCheck />
+        <div>
+          <AlertTitle>Copied!</AlertTitle>
+          <AlertDescription>Copied {title} ID to clipboard!</AlertDescription>
+        </div>
+      </Alert>
     </div>
   )
 }
