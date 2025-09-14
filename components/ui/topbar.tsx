@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import SearchPopover from "@/components/ui/SearchPopover"
 import { 
   UserButton, 
   SignedIn, 
@@ -80,13 +81,7 @@ export default function Topbar({ themes, onSearch }: TopbarProps) {
         </NavigationMenu>
 
         {/* Search */}
-        <Input
-          type="text"
-          placeholder="Search Themrs..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="bg-neutral-800 text-white px-3 py-1 rounded-md border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-        />
+          <SearchPopover />
 
         {/* Auth / User Section */}
         {isLoaded && (
