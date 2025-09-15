@@ -11,16 +11,24 @@ type Themr = {
   title: string
   description: string
   image_url: string
+  category_id: string
   user_id: string
+}
+
+type Category = {
+  id: string
+  name: string
 }
 
 export default function AdminThemrApprovals() {
   const { user } = useUser()
   const [pending, setPending] = useState<Themr[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
     if (!user || user.id !== "user_32hq3G3Jv2v2USX4NLH03dyEArw") return
     fetchPending()
+    fetchCategories()
   }, [user])
 
   const fetchPending = async () => {
@@ -29,15 +37,25 @@ export default function AdminThemrApprovals() {
     setPending(data)
   }
 
+  const fetchCategories = async () => {
+    const { data } = await supabase.from("categories").select("*")
+    if (data) setCategories(data)
+  }
+
+  const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || "Unknown"
+
   const approve = async (themr: Themr) => {
-    // Copy to main table
-    await supabase.from("themr_main").insert({
+    // copy to main table
+    const { error: insertError } = await supabase.from("themr_main").insert({
       title: themr.title,
       description: themr.description,
-      image_url: themr.image_url
+      image_url: themr.image_url,
+      category_id: themr.category_id,
+      created_by: themr.user_id
     })
+    if (insertError) return toast.error("Failed to approve")
 
-    // Remove from pending
+    // remove from pending
     await supabase.from("themrs_user_uploaded").delete().eq("id", themr.id)
     toast.success("Approved")
     fetchPending()
@@ -58,6 +76,7 @@ export default function AdminThemrApprovals() {
         <div key={t.id} className="border p-4 rounded space-y-2">
           <h2 className="font-semibold">{t.title}</h2>
           <p>{t.description}</p>
+          <p className="text-sm font-medium">Category: {getCategoryName(t.category_id)}</p>
           {t.image_url && <img src={t.image_url} alt={t.title} className="max-h-40 object-cover rounded" />}
           <div className="flex gap-2">
             <Button onClick={() => approve(t)}>Approve</Button>
