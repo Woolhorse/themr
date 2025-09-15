@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useUser } from "@clerk/nextjs"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { supabase } from "@/lib/supabase"
 
@@ -13,72 +13,76 @@ export default function SubmitThemr() {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [file, setFile] = useState<File | null>(null)
-  const [categoryId, setCategoryId] = useState("")
-  const [categories, setCategories] = useState<{id: string, name: string}[]>([])
   const [loading, setLoading] = useState(false)
 
-  // fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const { data } = await supabase.from('categories').select('*')
-      if (data) setCategories(data)
-    }
-    fetchCategories()
-  }, [])
-
   const handleSubmit = async () => {
-    if (!title || !description || !file || !categoryId) return toast.error("Fill everything")
-    if (!user) return toast.error("You must be signed in")
+    if (!user) return toast.error("You must be signed in!")
+    if (!title || !description || !file) return toast.error("Fill out everything")
 
     setLoading(true)
-    
-    // upload file to Supabase storage
-    const fileName = `${crypto.randomUUID()}-${file.name}` // unique name
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from("themr-images")
-      .upload(`pending/${fileName}`, file)
 
-    if (uploadError) {
-      toast.error("Upload failed")
-      setLoading(false)
-      return
-    }
+    try {
+      // generate a unique file name
+      const uniqueName = `pending/${crypto.randomUUID()}-${file.name}`
 
-    const fileUrl = supabase.storage.from("themr-images").getPublicUrl(uploadData.path).data.publicUrl
+      // upload the file
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("themr-images")
+        .upload(uniqueName, file)
 
-    // insert into pending table
-    const { error } = await supabase.from("themrs_user_uploaded").insert({
-      title,
-      description,
-      image_url: fileUrl,
-      user_id: user.id,
-      category_id: categoryId
-    })
+      if (uploadError || !uploadData?.path) throw uploadError || new Error("Upload failed")
 
-    if (error) toast.error("Something went wrong")
-    else {
+      // get public URL
+      const { data: publicUrlData } = supabase
+        .storage
+        .from("themr-images")
+        .getPublicUrl(uploadData.path)
+
+      if (!publicUrlData?.publicUrl) throw new Error("Failed to get file URL")
+
+      // insert into pending table (updated table name)
+      const { error: insertError } = await supabase.from("themrs_user_uploaded").insert({
+        title,
+        description,
+        image_url: publicUrlData.publicUrl,
+        user_id: user.id
+      })
+
+      if (insertError) throw insertError
+
       toast.success("Themr submitted!")
-      setTitle(""); setDescription(""); setFile(null); setCategoryId("")
+      setTitle("")
+      setDescription("")
+      setFile(null)
+    } catch (err: any) {
+      console.error(err)
+      toast.error(err.message || "Something went wrong")
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (
     <div className="max-w-md mx-auto p-4 space-y-4">
       <h1 className="text-2xl font-bold">Submit a Themr</h1>
-      <Input placeholder="Title" value={title} onChange={e => setTitle(e.target.value)} />
-      <Textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
-      <select
-        className="border rounded p-2 w-full"
-        value={categoryId}
-        onChange={e => setCategoryId(e.target.value)}
-      >
-        <option value="">Select a category</option>
-        {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-      </select>
-      <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} />
-      <Button onClick={handleSubmit} disabled={loading}>{loading ? "Submitting..." : "Submit"}</Button>
+      <Input
+        placeholder="Title"
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+      />
+      <Textarea
+        placeholder="Description"
+        value={description}
+        onChange={e => setDescription(e.target.value)}
+      />
+      <input
+        type="file"
+        accept="image/*"
+        onChange={e => setFile(e.target.files?.[0] || null)}
+      />
+      <Button onClick={handleSubmit} disabled={loading}>
+        {loading ? "Submitting..." : "Submit"}
+      </Button>
     </div>
   )
 }
