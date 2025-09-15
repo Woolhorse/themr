@@ -68,16 +68,27 @@ export default function Topbar({ themes, onSearch }: TopbarProps) {
               <NavigationMenuTrigger className="bg-neutral-800 hover:bg-neutral-600 hover:text-black">
                 Menu
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="bg-neutral-800 text-white rounded-md p-2 shadow-lg">
+              <NavigationMenuContent className="bg-neutral-800 text-white rounded-md py-3 shadow-lg">
                 <NavigationMenuLink asChild>
                   <Link href="/">Home</Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
                   <Link href="/themes">Themes</Link>
                 </NavigationMenuLink>
+
+                <NavigationMenuLink asChild>
+                  <Link href="/legal/tos">TOS</Link>
+                </NavigationMenuLink>
+
+                <NavigationMenuLink asChild>
+                  <Link href="/legal/privacy">Privacy</Link>
+                </NavigationMenuLink>
+
               </NavigationMenuContent>
             </NavigationMenuItem>
           </NavigationMenuList>
+
+
         </NavigationMenu>
 
         {/* Search */}
