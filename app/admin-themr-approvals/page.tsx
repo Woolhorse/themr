@@ -46,7 +46,7 @@ export default function AdminThemrApprovals() {
 
   const approve = async (themr: Themr) => {
     // copy to main table
-    const { error: insertError } = await supabase.from("themr_main").insert({
+    const { error: insertError } = await supabase.from("themrs").insert({
       title: themr.title,
       description: themr.description,
       image_url: themr.image_url,
