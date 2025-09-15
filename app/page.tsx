@@ -44,7 +44,7 @@ export default function HomePage() {
             Welcome to Themr
           </h1>
           <p className="text-gray-300 text-lg md:text-xl">
-            Discover, share, and explore amazing themes for Essentials+.
+            The Essentials+ theme marketplace.
           </p>
           <Link
             href="/themes"

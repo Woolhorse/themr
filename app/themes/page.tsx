@@ -79,9 +79,8 @@ export default function ThemesPage() {
                 variant="outline"
                 size="sm"
                 className="bg-neutral-800 border-neutral-800 mt-3 cursor-pointer"
-                onClick={() => handleGet(themr)}
               >
-                Get <ChevronRight />
+                <Link href={`/themes/${themr.id}`}>Get</Link> <ChevronRight />
               </Button>
             </div>
 
@@ -93,50 +92,6 @@ export default function ThemesPage() {
           </div>
         ))}
       </div>
-
-      {/* Toast Container grouped by category */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 max-w-xs">
-        {Object.entries(groupedToasts).map(([categoryName, toasts]) => (
-          <div key={categoryName}>
-            <h4 className="text-xs font-bold text-gray-300 mb-1">{categoryName}</h4>
-            <div className="flex flex-col gap-2">
-              {toasts.map((toast) => (
-                <ToastAlert key={toast.id} title={toast.title} />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Single Toast Alert with fade + slide animation
-function ToastAlert({ title }: { title: string }) {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    setVisible(true)
-    const timer = setTimeout(() => setVisible(false), 2800)
-    return () => clearTimeout(timer)
-  }, [])
-
-  return (
-    <div
-      className={`transform transition-all duration-300 ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
-    >
-      <Alert
-        variant="default"
-        className="bg-neutral-900 text-white border-neutral-700 shadow-lg flex items-center gap-2"
-      >
-        <ClipboardCheck />
-        <div>
-          <AlertTitle>Copied!</AlertTitle>
-          <AlertDescription>Copied {title} ID to clipboard!</AlertDescription>
-        </div>
-      </Alert>
     </div>
   )
 }
